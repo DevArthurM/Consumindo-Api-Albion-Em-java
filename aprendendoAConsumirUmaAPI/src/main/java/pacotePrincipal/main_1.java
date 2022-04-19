@@ -7,46 +7,40 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class AlbionApiConsult {
+public class main_1 {
 
-    private BufferedReader reader;
-    private String line;
-    private StringBuffer responseContent = new StringBuffer();
-    private String dados;
-    
-    private HttpURLConnection connection;
-    private int status;
+    private static HttpURLConnection connection;
 
-    public String searchAlbion(String urlString) throws MalformedURLException, IOException {
-
+    public static void main(String[] args) throws MalformedURLException, IOException {
+        BufferedReader reader;
+        String line;
+        StringBuffer responseContent = new StringBuffer();
         try {
-            URL url = new URL("https://gameinfo.albiononline.com/api/gameinfo/search?q=" + urlString);
+            URL url = new URL("https://gameinfo.albiononline.com/api/gameinfo/battles");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
-            status = connection.getResponseCode();
+            int status = connection.getResponseCode();
+            System.out.println(status);
             if (status > 299) {
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
                 while ((line = reader.readLine()) != null) {
-                   // responseContent.append(line);
-                    dados = line;
+                    responseContent.append(line);
                 }
                 reader.close();
             } else {
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 while ((line = reader.readLine()) != null) {
-                    dados = line;
-                   //responseContent.append(line);
+                    responseContent.append(line);
                 }
                 reader.close();
             }
-            return dados;
+            System.out.println(responseContent.toString());
         } catch (MalformedURLException e) {
-            return e.toString();
+            System.out.println(e);
         } catch (IOException e) {
-            return e.toString();
+            System.out.println(e);
         }
-
     }
 }
